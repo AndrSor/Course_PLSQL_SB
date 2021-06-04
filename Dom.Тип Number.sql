@@ -1,19 +1,8 @@
-﻿ALTER SESSION SET CURRENT_SCHEMA=c##course;
-
------- Последовательность
-
-CREATE sequence sq_test;
-
-DROP TABLE test;
-
-CREATE TABLE test (
-    test_id NUMBER(38)
-  , code VARCHAR2(16)
-  , constraint pk_test primary key (test_id)
-);
-
-INSERT INTO test (test_id, code) VALUES (sq_test.NEXTVAL, 'One');
-
-SELECT * FROM test;
-
-DROP TABLE test;
+﻿SELECT
+      CAST(7456123.89 AS NUMBER(*,1))
+    , CAST(7456123.89 AS NUMBER(9))
+    , CAST(7456123.89 AS NUMBER(9,2))
+    , CAST(7456123.89 AS NUMBER(*,2))
+    --, CAST(7456123.89 AS NUMBER(6))
+    , CAST(7456123.89 AS NUMBER(7,-2))
+    FROM dual;
