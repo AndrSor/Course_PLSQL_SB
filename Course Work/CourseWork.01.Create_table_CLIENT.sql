@@ -1,16 +1,14 @@
-﻿ALTER SESSION SET CURRENT_SCHEMA=c##course;
-
-------
+﻿------
 ------ Удаление таблицы CLIENTS
 ------
 
-DROP TABLE client;
+DROP TABLE c##course.client;
 
 ------
 ------ Создание таблицы клиенты (физ. лица)
 ------
 
-CREATE TABLE client (
+CREATE TABLE c##course.client (
     id          NUMBER,
     cl_name     VARCHAR2(100),
     date_birth  DATE
@@ -20,14 +18,14 @@ CREATE TABLE client (
 ------ Создание индекса
 ------
 
-CREATE UNIQUE INDEX idx_client_id
-    ON client (id);
+CREATE UNIQUE INDEX c##course.idx_client_id
+    ON c##course.client (id);
 
 ------
 ------ Добавление первичного ключа
 ------
 
-ALTER TABLE client
+ALTER TABLE c##course.client
     ADD
     ( 
         CONSTRAINT client_id_pk
