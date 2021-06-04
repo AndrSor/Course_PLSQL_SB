@@ -1,6 +1,6 @@
-ALTER SESSION SET CURRENT_SCHEMA=c##course;
+п»їALTER SESSION SET CURRENT_SCHEMA=c##course;
 
------- Последовательность
+------ РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ
 
 CREATE sequence sq_test;
 
