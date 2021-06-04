@@ -1,4 +1,4 @@
-ALTER SESSION SET CURRENT_SCHEMA=c##course;
+﻿ALTER SESSION SET CURRENT_SCHEMA=c##course;
 
 ------
 ------ Удаление таблицы PR_CREDIT
