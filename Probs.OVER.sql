@@ -1,6 +1,13 @@
 --alter session set container=testdbplug;
 --ALTER SESSION SET CURRENT_SCHEMA=HR;
 
+
+
+
+
+
+
+
 SELECT
         a.FIRST_NAME,
         a.LAST_NAME,

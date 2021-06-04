@@ -1,0 +1,19 @@
+---------- 1 --------
+
+
+
+How to display utf8 characters in sql developer
+
+Tools | Preferences |Environment
+
+
+https://community.oracle.com/tech/developers/discussion/878370/how-to-display-utf8-characters-in-sql-developer
+
+
+-------------------------
+
+
+
+
+
+
