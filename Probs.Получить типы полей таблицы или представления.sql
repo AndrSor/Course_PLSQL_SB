@@ -1,0 +1,1 @@
+DESC PR_CREDIT;
