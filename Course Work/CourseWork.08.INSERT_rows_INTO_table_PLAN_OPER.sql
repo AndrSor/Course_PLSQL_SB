@@ -1461,3 +1461,4 @@ VALUES (6432340347875, to_date('12/19/2021', 'MM/DD/RRRR'), 280.08, 'Погаш�
 INSERT INTO c##course.plan_oper (COLLECTION_ID, P_DATE, P_SUMMA, TYPE_OPER) 
 VALUES (6432340347875, to_date('12/19/2021', 'MM/DD/RRRR'), 20736.12, 'Погашение кредита');
 
+COMMIT;

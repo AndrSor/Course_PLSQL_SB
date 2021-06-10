@@ -711,3 +711,4 @@ VALUES (6333805292631, to_date('02/21/2021', 'MM/DD/RRRR'), 2205.05, 'Погаш
 INSERT INTO c##course.fact_oper (COLLECTION_ID, F_DATE, F_SUMMA, TYPE_OPER) 
 VALUES (6333805292631, to_date('02/21/2021', 'MM/DD/RRRR'), 20851.95, 'Погашение кредита');
 
+COMMIT;
