@@ -3,6 +3,9 @@ DROP TYPE c##course.table_report;
 /
 DROP TYPE c##course.report_row;
 /
+REM
+REM Создаем тип отражающий столбцы отчета
+REM
 CREATE OR REPLACE TYPE c##course.report_row AS OBJECT
 ( 
       num_dog             varchar2(10)
@@ -15,14 +18,14 @@ CREATE OR REPLACE TYPE c##course.report_row AS OBJECT
 );
 /
 CREATE OR REPLACE TYPE c##course.table_report AS TABLE OF c##course.report_row;
-
-
 /
-
+REM
+REM Создаем функцию которая принимае в качестве параметра Дату отчета и возвращает таблицу
+REM
 CREATE OR REPLACE FUNCTION c##course.fn_get_report (report_dt DATE)
     RETURN c##course.table_report PIPELINED
-    -- Атрибут pipelined означает, что функция является конвейерной, результат возвращается клиенту немедленно при вызове директивы pipe row, 
-    -- поэтому оператор return необязателен.
+    -- Атрибут PIPELINED означает, что функция является конвейерной, 
+    -- результат возвращается клиенту немедленно при вызове директивы pipe row, поэтому оператор return необязателен.
     AS
         result_table_report c##course.table_report;
 BEGIN
@@ -37,7 +40,9 @@ SELECT
             , sum_fact.sum_vidano - NVL(sum_fact.sum_pogasheno,0)
             , NVL(sum_pogasheno_percent_plan.sum_pogasheno_percent_plan,0) - NVL(sum_fact.sum_pogasheno_percent,0)
         )
+    -- BULK COLLECT извлекает из запроса все данные(строки) в указанную коллекцию записей.
     BULK COLLECT INTO result_table_report
+    
     FROM
         c##course.pr_credit dog
 
@@ -80,10 +85,6 @@ SELECT
         dog.date_begin
 
     ;
-
--- FOR loop_counter IN [REVERSE] lowest_number..highest_number LOOP
--- {...statements...}
--- END LOOP;
 
     FOR i IN 1..result_table_report.count LOOP
         PIPE ROW (c##course.report_row 
