@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION c##course.fn_make_report (report_dt DATE)
+﻿CREATE OR REPLACE FUNCTION c##course.fn_make_report (report_dt DATE)
     RETURN clob
 AS
     st CLOB := '';

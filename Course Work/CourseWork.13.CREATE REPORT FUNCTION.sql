@@ -1,4 +1,4 @@
-
+﻿
 DROP TYPE c##course.table_report;
 /
 DROP TYPE c##course.report_row;
