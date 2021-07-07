@@ -21,12 +21,8 @@ AS
     p_summa_percent             number;     -- ежемесячное погашение процентов
     p_summa_body                number;     -- ежемесячное погашение кредита
     summa_dog_ostat             number;     -- остаток по кредиту
-    
-    
-    
+
 BEGIN
-
-
 
     DBMS_OUTPUT.PUT_LINE('client_name = ' || client_name);
     DBMS_OUTPUT.PUT_LINE('client_birth = ' || client_birth);
@@ -39,7 +35,7 @@ BEGIN
     date_begin := CURRENT_DATE;
     date_end := ADD_MONTHS(date_begin,duration_dog);
     year_dog := TO_CHAR(date_begin,'YYYY');
-    /*
+    
     SELECT
         COUNT(*) INTO amount_dog_in_current_year
         FROM c##course.pr_credit
@@ -55,18 +51,15 @@ BEGIN
                 num_dog LIKE  year_dog || '/%';
    
     END IF;
-    
    
     DBMS_OUTPUT.PUT_LINE('client_id = ' || client_id);
     DBMS_OUTPUT.PUT_LINE('date_begin = ' || date_begin);
     DBMS_OUTPUT.PUT_LINE('date_end = ' || date_end);
     DBMS_OUTPUT.PUT_LINE('year_dog = ' || year_dog);
     DBMS_OUTPUT.PUT_LINE('num_dog = ' || year_dog || '/' || num_dog);
-    */
-    
+
     SAVEPOINT add_dog;
-    
-    /*
+
     credit_id       := c##course.seq.nextval;
     collect_plan_id := c##course.seq.nextval;
     collect_fact_id := c##course.seq.nextval;
@@ -91,14 +84,6 @@ BEGIN
         , collect_plan_id
         , collect_fact_id
     );
-    
-    
-    */
-    
-    
-    credit_id := 6446261209935;
-    collect_plan_id := 6446261209936;
-    collect_fact_id := 6446261209937;
     
     credit_month_percent := persent_dog / 100 / duration_dog;
     
