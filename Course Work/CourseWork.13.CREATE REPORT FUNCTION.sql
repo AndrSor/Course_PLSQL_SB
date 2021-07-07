@@ -81,9 +81,7 @@ SELECT
 
     ;
 
--- FOR loop_counter IN [REVERSE] lowest_number..highest_number LOOP
--- {...statements...}
--- END LOOP;
+
 
     FOR i IN 1..result_table_report.count LOOP
         PIPE ROW (c##course.report_row 
