@@ -69,13 +69,7 @@ ACCEPT dt DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:
 DEFINE spool_file = 'c:\Temp\&dt..xls';
 SPOOL &spool_file
 
-BEGIN
-
-    FOR i IN (select c##course.fn_make_report (to_date('&dt','DD.MM.YYYY')) AS st FROM dual) LOOP
-        DBMS_OUTPUT.PUT_LINE(i.st);
-    END LOOP;
-
-END;
+EXECUTE c##course.pr_make_report (TO_DATE('&dt','DD.MM.YYYY'));
 /
 
 SPOOL OFF
