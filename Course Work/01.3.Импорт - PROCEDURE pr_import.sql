@@ -140,5 +140,41 @@ MERGE INTO c##course.fact_oper fact_oper
 
 END pr_import;
 /
+
 EXECUTE c##course.pr_import;
+
+
+/
+
+DECLARE
+    job_count integer := 0;
+BEGIN
+
+
+    SELECT
+        COUNT(*) INTO job_count
+        FROM ALL_SCHEDULER_JOBS
+        WHERE JOB_NAME = 'JOB_IMPORT';
+        
+    IF job_count > 0 THEN
+        BEGIN
+            DBMS_SCHEDULER.DROP_JOB(job_name => 'c##course.job_import');
+        END;
+    END IF;
+
+    DBMS_SCHEDULER.CREATE_JOB (
+            job_name => 'c##course.job_import',
+            job_type => 'STORED_PROCEDURE',
+            job_action => 'c##course.pr_import',
+            number_of_arguments => 0,
+            start_date => TO_TIMESTAMP_TZ('2021-07-23 15:52:32.141000000 EUROPE/MOSCOW','YYYY-MM-DD HH24:MI:SS.FF TZR'),
+            repeat_interval => 'FREQ=HOURLY;INTERVAL=24',
+            end_date => NULL,
+            enabled => TRUE,
+            auto_drop => FALSE,
+            comments => 'Import Job');
+
+         
+END;
+
 
