@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE c##course.pr_make_report (report_dt IN DATE)
+﻿CREATE OR REPLACE PROCEDURE c##course.pr_make_report (report_dt IN DATE)
 
 AS
     t NUMBER := 0;

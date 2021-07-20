@@ -1,4 +1,4 @@
-SET SERVEROUT ON
+﻿SET SERVEROUT ON
 /
 
 CREATE OR REPLACE PROCEDURE c##course.pr_create_client (
