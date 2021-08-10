@@ -101,6 +101,8 @@ CREATE TABLE c##course.fact_oper (
 
 CREATE INDEX c##course.idx_fact_oper_collection_id
     ON c##course.fact_oper (collection_id);
+CREATE INDEX c##course.idx_fact_oper_f_date
+    ON c##course.fact_oper (f_date);
 
 ------ Добавление первичного ключа
 
@@ -139,6 +141,8 @@ CREATE TABLE c##course.plan_oper (
 
 CREATE INDEX c##course.idx_plan_oper_collection_id
     ON c##course.plan_oper (collection_id);
+CREATE INDEX c##course.idx_plan_oper_p_date
+    ON c##course.plan_oper (p_date);
 
 ------ Добавление внешнего ключа
 
