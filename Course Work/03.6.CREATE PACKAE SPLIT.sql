@@ -1,3 +1,9 @@
+/*
+|
+|   Перет SPLIT с перегруженной функцией  GET
+|
+*/
+
 CREATE OR REPLACE PACKAGE c##course.split AS
     
     TYPE arr IS TABLE OF CLOB INDEX BY PLS_INTEGER;
