@@ -12,10 +12,10 @@ CREATE OR REPLACE PACKAGE c##course.pk_credit_report AS
 
     TYPE table_report IS TABLE OF report_row;
     
-    --TYPE report_cursor IS REF CURSOR RETURN report_row;
-
     FUNCTION fn_get_report (report_dt DATE) RETURN table_report;
     
     --PROCEDURE pr_make_report (report_dt IN DATE);
     
 END pk_credit_report;
+/
+

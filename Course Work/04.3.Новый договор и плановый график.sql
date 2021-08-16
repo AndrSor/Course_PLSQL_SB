@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE c##course.pr_create_credit (
+﻿CREATE OR REPLACE PROCEDURE c##course.pr_create_credit (
       client_name     IN varchar2        -- Клиент ФИО
     , client_birth    IN date            -- Дата рождения Клиента
     , summa_dog       IN number          -- Сумма кредита
@@ -141,7 +141,42 @@ EXCEPTION
     WHEN OTHERS
     THEN
         ROLLBACK TO add_dog;
+        c##course.write_audit(SQLCODE,SUBSTR(SQLERRM, 1, 200));
 
 END;
 
 /
+
+CREATE OR REPLACE PROCEDURE c##course.write_audit
+    (
+         sql_code    IN NUMBER
+        ,sql_errm    IN VARCHAR2
+    )
+IS
+
+    PRAGMA AUTONOMOUS_TRANSACTION; 
+
+BEGIN
+    INSERT INTO c##course.audit_table
+    (
+         sqlcode
+        ,sqlerrm
+    ) VALUES (
+         sql_code
+        ,sql_errm
+    );
+
+    COMMIT;
+
+END;
+
+/
+DROP TABLE c##course.audit_table;
+
+CREATE TABLE c##course.audit_table 
+(
+      sqlcode       NUMBER 
+    , sqlerrm       VARCHAR2(200) 
+    , current_user  VARCHAR2(200)   DEFAULT USER 
+    , DT            TIMESTAMP       DEFAULT SYSDATE 
+)

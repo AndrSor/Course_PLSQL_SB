@@ -15,8 +15,6 @@ CREATE OR REPLACE TYPE c##course.report_row AS OBJECT
 );
 /
 CREATE OR REPLACE TYPE c##course.table_report AS TABLE OF c##course.report_row;
-
-
 /
 
 CREATE OR REPLACE FUNCTION c##course.fn_get_report (report_dt DATE)
@@ -101,4 +99,24 @@ SELECT
 
 END;
     
+/
+SET SERVEROUTPUT ON
+/
+BEGIN
+    FOR i IN (
+        SELECT * FROM c##course.fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'))
+    ) LOOP
+    
+        DBMS_OUTPUT.PUT_LINE(
+               RPAD(i.num_dog,10,' ')
+            || RPAD(i.cl_name,40,' ')
+            || RPAD(TO_CHAR(i.summa_dog,'9999990.99'),15,' ')
+            || RPAD(i.date_begin,10,' ')
+            || RPAD(i.date_end,10,' ')
+            || RPAD(TO_CHAR(i.ostat_dolg,'9999990.00'),15,' ')
+            || RPAD(TO_CHAR(i.need_pogash_percent,'9999990.99'),15,' ')
+        );
+    
+    END LOOP;
+END;  
 /

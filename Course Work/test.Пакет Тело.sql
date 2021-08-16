@@ -1,13 +1,10 @@
-CREATE OR REPLACE PACKAGE BODY c##course.pk_credit_report IS  
+CREATE OR REPLACE PACKAGE BODY c##course.pk_credit_report AS
 
     FUNCTION fn_get_report (report_dt DATE)
         RETURN table_report
         IS
-            result_table_report table_report;
-            --t_cursor report_cursor;
-
+            result_table_report table_report := table_report();
      BEGIN
-
 
         FOR row_r IN (
                     SELECT
@@ -75,11 +72,7 @@ CREATE OR REPLACE PACKAGE BODY c##course.pk_credit_report IS
     
         END LOOP;
         
-        DBMS_OUTPUT.PUT_LINE(result_table_report.COUNT);
-        
         RETURN result_table_report;
-
-
 
     END fn_get_report;
     

@@ -36,9 +36,9 @@ SELECT
             , dog.date_begin
             , dog.date_end
             -- Остаток ссудной задолженности 
-            , sum_fact.sum_vidano - NVL(sum_fact.sum_pogasheno,0)
+            , fact.sum_vidano - NVL(fact.sum_pogasheno,0)
             -- Сумма предстоящих процентов к погашению 
-            , NVL(sum_pogasheno_percent_plan.sum_pogasheno_percent_plan,0) - NVL(sum_fact.sum_pogasheno_percent,0)
+            , NVL(plan.sum_pogasheno_percent,0) - NVL(fact.sum_pogasheno_percent,0)
         )
     BULK COLLECT INTO result_table_report
     FROM
@@ -60,22 +60,20 @@ SELECT
                 f_date <= c##course.fn_get_report.report_dt
                 
             GROUP BY collection_id
-    ) sum_fact
-    ON (dog.collect_fact = sum_fact.collection_id)
+    ) fact
+    ON (dog.collect_fact = fact.collection_id)
 
    LEFT JOIN 
    (
         SELECT
-            SUM(p_summa) AS sum_pogasheno_percent_plan,
+            SUM(p_summa) AS sum_pogasheno_percent,
             collection_id
             FROM c##course.plan_oper
             WHERE
-                p_date <= c##course.fn_get_report.report_dt
-                AND
                 type_oper = 'Погашение процентов'
             GROUP BY collection_id
-   ) sum_pogasheno_percent_plan
-   ON (dog.collect_plan = sum_pogasheno_percent_plan.collection_id)
+   ) plan
+   ON (dog.collect_plan = plan.collection_id)
 
    WHERE
         dog.date_begin <= c##course.fn_get_report.report_dt

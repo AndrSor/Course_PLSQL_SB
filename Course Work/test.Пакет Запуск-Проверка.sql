@@ -17,16 +17,16 @@ DECLARE
 
 BEGIN
 
-    t_report := c##course.fn_get_report ( TO_DATE('10.10.2020','DD.MM.YYYY');
+    --t_report := c##course.fn_get_report ( TO_DATE('10.10.2020','DD.MM.YYYY'));
 
-    FOR i IN (
-        SELECT * FROM c##course.fn_get_report ( TO_DATE('10.10.2020','DD.MM.YYYY') )
-    ) LOOP
+    --FOR i IN (
+    --    SELECT * FROM c##course.pk_credit_report.fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'))
+    --) LOOP
     
-        NULL;
+    --    NULL;
         
     
-    END LOOP ;
+    --END LOOP ;
 
 
 END;

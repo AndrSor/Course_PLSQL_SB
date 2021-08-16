@@ -1,4 +1,4 @@
---
+﻿--
 -- Удаление таблицы AUDIT_TABLE
 --
 DROP TABLE c##course.audit_table;

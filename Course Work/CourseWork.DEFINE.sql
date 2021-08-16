@@ -1,4 +1,4 @@
-set verify off;
+﻿set verify off;
 
 --define from_date;
 
