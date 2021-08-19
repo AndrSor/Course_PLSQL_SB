@@ -1,3 +1,6 @@
+--VARIABLE dt_report VARCHAR2(10);
+CLEAR SCREEN
+
 EXPLAIN PLAN FOR
 SELECT
               dog.num_dog
@@ -19,14 +22,14 @@ SELECT
         
     LEFT JOIN
     (
-        SELECT
+        SELECT  /*+ index(idx_fact_oper_f_date) */
               collection_id
             , SUM(CASE type_oper WHEN 'Выдача кредита'      THEN f_summa ELSE 0 END) AS sum_vidano
             , SUM(CASE type_oper WHEN 'Погашение кредита'   THEN f_summa ELSE 0 END) AS sum_pogasheno
             , SUM(CASE type_oper WHEN 'Погашение процентов' THEN f_summa ELSE 0 END) AS sum_pogasheno_percent
             FROM c##course.fact_oper
             WHERE
-                f_date <= TO_DATE('10.10.2020','DD.MM.YYYY')
+                f_date <= TO_DATE(':dt_report','DD.MM.YYYY')
                 
             GROUP BY collection_id
     ) fact
@@ -39,18 +42,16 @@ SELECT
             collection_id
             FROM c##course.plan_oper
             WHERE
-               -- p_date <= TO_DATE('10.10.2020','DD.MM.YYYY')
-                --AND
                 type_oper = 'Погашение процентов'
             GROUP BY collection_id
    ) plan
    ON (dog.collect_plan = plan.collection_id)
 
    WHERE
-        dog.date_begin <= TO_DATE('10.10.2020','DD.MM.YYYY')
+        dog.date_begin <= TO_DATE(':dt_report','DD.MM.YYYY')
    ORDER BY
         dog.date_begin
 ;
 
---select * from table(DBMS_XPLAN.DISPLAY(format => 'ALL'));
+select * from table(DBMS_XPLAN.DISPLAY(format => 'ALL'));
 

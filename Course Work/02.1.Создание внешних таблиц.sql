@@ -8,8 +8,9 @@
 ------ 1.5.Создание объекта "Директория импорта"
 
 DROP DIRECTORY directory_import;
-
 CREATE DIRECTORY directory_import AS 'C:\Temp'; 
+DROP DIRECTORY importlog;
+CREATE DIRECTORY importlog AS 'C:\Temp\Importlog'; 
 
 ------ 1.6.Создание Внешних таблиц
 
@@ -29,6 +30,9 @@ ORGANIZATION EXTERNAL
     ACCESS PARAMETERS 
     (
         RECORDS DELIMITED BY NEWLINE
+        BADFILE     'IMPORTLOG':'client.bad'
+        DISCARDFILE 'IMPORTLOG':'client.dis'
+        LOGFILE     'IMPORTLOG':'client.log'
         FIELDS TERMINATED BY ';'
         (
               ID         
@@ -62,6 +66,9 @@ ORGANIZATION EXTERNAL
     ACCESS PARAMETERS 
     (
         RECORDS DELIMITED BY NEWLINE
+        BADFILE     'IMPORTLOG':'pr_credit.bad'
+        DISCARDFILE 'IMPORTLOG':'pr_credit.dis'
+        LOGFILE     'IMPORTLOG':'pr_credit.log'
         FIELDS TERMINATED BY ';'
         (
               ID              
@@ -95,6 +102,9 @@ ORGANIZATION EXTERNAL
     ACCESS PARAMETERS 
     (
         RECORDS DELIMITED BY NEWLINE
+        BADFILE     'IMPORTLOG':'plan_oper.bad'
+        DISCARDFILE 'IMPORTLOG':'plan_oper.dis'
+        LOGFILE     'IMPORTLOG':'plan_oper.log'
         FIELDS TERMINATED BY ';'
         (
               COLLECTION_ID
@@ -124,6 +134,9 @@ ORGANIZATION EXTERNAL
     ACCESS PARAMETERS 
     (
         RECORDS DELIMITED BY NEWLINE
+        BADFILE     'IMPORTLOG':'fact_oper.bad'
+        DISCARDFILE 'IMPORTLOG':'fact_oper.dis'
+        LOGFILE     'IMPORTLOG':'fact_oper.log'
         FIELDS TERMINATED BY ';'
         (
               COLLECTION_ID

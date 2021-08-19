@@ -99,75 +99,77 @@ CREATE OR REPLACE PACKAGE BODY c##course.pk_credit_report AS
     
     
     PROCEDURE pr_make_report (report_dt IN DATE) AS
-        t NUMBER := 0;
+
         report_out table_report := table_report();
-    BEGIN
         
-        report_out := fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'));
+        cn          VARCHAR2(1000)  := '';
+        s_file      UTL_FILE.FILE_TYPE;
+        d_file      UTL_FILE.FILE_TYPE; 
         
+    BEGIN        
         
-        DBMS_OUTPUT.PUT_LINE('<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">');
-        DBMS_OUTPUT.PUT_LINE('<head>');
-        DBMS_OUTPUT.PUT_LINE('<meta http-equiv=Content-Type content="text/html; charset=utf-8">');
-        DBMS_OUTPUT.PUT_LINE('<meta name=ProgId content=Excel.Sheet>');
-        DBMS_OUTPUT.PUT_LINE('<meta name=Generator content="Microsoft Excel 12">');
-        DBMS_OUTPUT.PUT_LINE('<xml>');
-        DBMS_OUTPUT.PUT_LINE('<x:ExcelWorkbook>');
-        DBMS_OUTPUT.PUT_LINE('<x:RefModeR1C1/>');
-        DBMS_OUTPUT.PUT_LINE('</x:ExcelWorkbook>');
-        DBMS_OUTPUT.PUT_LINE('</xml>');
-        DBMS_OUTPUT.PUT_LINE('</head>');
-        DBMS_OUTPUT.PUT_LINE('<body>');
-        DBMS_OUTPUT.PUT_LINE('<style>col{mso-width-source:auto}br{mso-data-placement:same-cell}td{font-size:8pt;vertical-align:bottom}</style>');
-        DBMS_OUTPUT.PUT_LINE('<table>');
-        DBMS_OUTPUT.PUT_LINE('<tr>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt .5pt">№ п.п.</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Номер договора</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">ФИО клиента</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Сумма договора</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Дата начала договора</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Дата окончания договора</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Остаток ссудной задолженности</td>');
-        DBMS_OUTPUT.PUT_LINE('<td bgcolor="#DDDDFF" style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">Сумма предстоящих процентов к погашению</td>');
-        DBMS_OUTPUT.PUT_LINE('</tr>');
-          
-        FOR i IN (
-            SELECT * FROM TABLE(report_out)
-        ) LOOP
+        report_out := fn_get_report (report_dt);
         
-        t := t + 1;
-        DBMS_OUTPUT.PUT_LINE('<tr>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt .5pt;text-align:right">' || t || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">' || i.num_dog || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt">' || i.cl_name || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt;mso-number-format:''Standard'';text-align:right">' || i.summa_dog || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt;text-align:right">' || i.date_begin || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt;text-align:right">'  || i.date_end ||  '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt;mso-number-format:''Standard'';text-align:right">' || i.ostat_dolg || '</td>');
-        DBMS_OUTPUT.PUT_LINE('<td style="border-color:#000000;border-style:solid;border-width:.5pt .5pt .5pt  0pt;mso-number-format:''Standard'';text-align:right">' || i.need_pogash_percent || '</td>');
-        DBMS_OUTPUT.PUT_LINE('</tr>');
-        
+        s_file := UTL_FILE.FOPEN('DIRECTORY_IMPORT','report_template.xml','r');
+        d_file := UTL_FILE.FOPEN('DIRECTORY_IMPORT',(report_dt || '.xml'),'w');
+      
+        LOOP
+            BEGIN
+    
+                UTL_FILE.GET_LINE(s_file,cn); 
+    
+                IF cn = '<body/>' THEN
+                
+                    FOR i IN 1..report_out.COUNT LOOP
+                        
+                        
+                        UTL_FILE.PUT_LINE(d_file,'   <Row>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tb"><Data ss:Type="Number">'     || i                                  || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tb"><Data ss:Type="String">'     || report_out(i).num_dog              || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tb"><Data ss:Type="String">'     || report_out(i).cl_name              || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tn"><Data ss:Type="Number">'     || report_out(i).summa_dog            || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="td"><Data ss:Type="DateTime">'   || to_char (report_out(i).date_begin,'yyyy-mm-dd') || 'T00:00:00.000'  || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="td"><Data ss:Type="DateTime">'   || TO_CHAR (report_out(i).date_end,'yyyy-mm-dd')   || 'T00:00:00.000'  || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tn"><Data ss:Type="Number">'     || report_out(i).ostat_dolg           || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'    <Cell ss:StyleID="tn"><Data ss:Type="Number">'     || report_out(i).need_pogash_percent  || '</Data></Cell>');
+                        UTL_FILE.PUT_LINE(d_file,'   </Row>');
+                        
+                    END LOOP;
+                ELSE
+                    UTL_FILE.PUT_LINE(d_file,cn);
+                END IF;
+    
+                
+    
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN 
+                    UTL_FILE.FCLOSE(s_file);
+                    EXIT;
+                    
+            END;
         END LOOP;
     
-        DBMS_OUTPUT.PUT_LINE('</table>');
-        DBMS_OUTPUT.PUT_LINE('</table>');
-        DBMS_OUTPUT.PUT_LINE('</html>');
-    
+      UTL_FILE.FCLOSE(d_file);
     END pr_make_report;
     
 END pk_credit_report;
 /
 
-/
 SET SERVEROUTPUT ON
+
 /
-/*
+
 -- Тест функции
+
+SET SERVEROUTPUt ON;
+CLEAR SCREEN;
+ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
+
 DECLARE
-    report_out c##course.pk_credit_report.table_report :=c##course.pk_credit_report.table_report();
+    report_out c##course.pk_credit_report.table_report := c##course.pk_credit_report.table_report();
 BEGIN
 
-    report_out :=  c##course.pk_credit_report.fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'));
+    report_out :=  c##course.pk_credit_report.fn_get_report (TO_DATE('&dt_report','DD.MM.YYYY'));
 
 
         DBMS_OUTPUT.PUT_LINE(
@@ -184,7 +186,8 @@ BEGIN
     FOR i IN 1..report_out.COUNT LOOP
         
         DBMS_OUTPUT.PUT_LINE(
-               RPAD(report_out(i).num_dog,10,' ')
+               RPAD(i,3,' ')
+            || RPAD(report_out(i).num_dog,10,' ')
             || RPAD(report_out(i).cl_name,40,' ')
             || RPAD(TO_CHAR(report_out(i).summa_dog,'9999990.99'),15,' ')
             || RPAD(report_out(i).date_begin,10,' ')
@@ -195,21 +198,16 @@ BEGIN
         
     END LOOP;
 END;
-*/
+
 /
 
 
-SET ECHO OFF
-SET VERIFY OFF
-SET SERVEROUTPUT ON
 
-ACCEPT dt DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
+ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
+EXECUTE c##course.pk_credit_report.pr_make_report (TO_DATE('&dt_report','DD.MM.YYYY'));
 
-DEFINE spool_file = 'c:\Temp\&dt..xls';
-SPOOL &spool_file
 
-EXECUTE c##course.pk_credit_report.pr_make_report (TO_DATE('&dt','DD.MM.YYYY'));
 
-SPOOL OFF
+
 
 

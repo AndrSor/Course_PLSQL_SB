@@ -144,7 +144,8 @@ END pr_import;
 EXECUTE c##course.pr_import;
 
 
-/
+--CONNECT SYSDBA
+--GRANT CREATE JOB TO c##course;
 
 DECLARE
     job_count integer := 0;
