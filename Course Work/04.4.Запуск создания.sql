@@ -44,7 +44,26 @@ END;
 /
 
 
-Я
+ACCEPT client_name PROMPT 'ФИО клиента:  ';
+ACCEPT client_birth DATE FORMAT 'dd.mm.yyyy' PROMPT 'Дата рождения клиента в формате ДД.ММ.ГГГГ:  ';
+ACCEPT summa_dog PROMPT 'Сумма кредита:  ';
+ACCEPT persent_dog PROMPT 'Годовая процентная ставка:  ';
+ACCEPT duration_dog PROMPT 'Срок кредитования месяцев:  ';
+
+DECLARE
+    dogovor_out varchar(15) := '';
+BEGIN
+
+    c##course.pr_create_credit (
+         '&client_name'
+        ,TO_DATE('&client_birth','DD.MM.YYYY')
+        ,TO_NUMBER('&summa_dog')
+        ,TO_NUMBER('&persent_dog')
+        ,TO_NUMBER('&duration_dog')
+        ,dogovor_out
+    );
+
+
     DBMS_OUTPUT.PUT_LINE('Клиент:' || '&client_name');
     DBMS_OUTPUT.PUT_LINE('Договор:' || dogovor_out);
     DBMS_OUTPUT.PUT_LINE('Cумма кредита:' || '&summa_dog');
