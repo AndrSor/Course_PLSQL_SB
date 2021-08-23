@@ -1,4 +1,4 @@
-﻿SET SERVEROUT ON
+SET SERVEROUT ON
 /
 
 CREATE OR REPLACE PROCEDURE c##course.pr_create_client (
@@ -22,7 +22,9 @@ BEGIN
             cl_name = client_name;
     
     IF client_exists > 0 THEN
-     DBMS_OUTPUT.PUT_LINE('Make select');
+     -----------------
+     -- 'Make select'
+     -----------------
      SELECT
         id INTO client_id
         FROM c##course.client
@@ -30,7 +32,9 @@ BEGIN
             cl_name = client_name;   
     ELSE
         client_id := c##course.seq.nextval;
-        DBMS_OUTPUT.PUT_LINE('Make insert');
+        -----------------
+        -- 'Make insert'
+        -----------------
         INSERT INTO c##course.client
             (
                   id

@@ -1,4 +1,41 @@
-﻿CREATE OR REPLACE PROCEDURE c##course.pr_create_credit (
+DROP TABLE c##course.audit_table;
+
+CREATE TABLE c##course.audit_table 
+(
+      sqlcode       NUMBER 
+    , sqlerrm       VARCHAR2(200) 
+    , current_user  VARCHAR2(200)   DEFAULT USER 
+    , DT            TIMESTAMP       DEFAULT SYSDATE 
+)
+
+/
+
+CREATE OR REPLACE PROCEDURE c##course.write_audit
+    (
+         sql_code    IN NUMBER
+        ,sql_errm    IN VARCHAR2
+    )
+IS
+
+    PRAGMA AUTONOMOUS_TRANSACTION; 
+
+BEGIN
+    INSERT INTO c##course.audit_table
+    (
+         sqlcode
+        ,sqlerrm
+    ) VALUES (
+         sql_code
+        ,sql_errm
+    );
+
+    COMMIT;
+
+END;
+
+/
+
+CREATE OR REPLACE PROCEDURE c##course.pr_create_credit (
       client_name     IN varchar2        -- Клиент ФИО
     , client_birth    IN date            -- Дата рождения Клиента
     , summa_dog       IN number          -- Сумма кредита
@@ -147,36 +184,114 @@ END;
 
 /
 
-CREATE OR REPLACE PROCEDURE c##course.write_audit
+
+
+--SELECT *FROM c##course.audit_table;
+
+/*
+|
+| Отчет для проверки
+|
+*/
+
+SELECT
+    *
+    FROM 
     (
-         sql_code    IN NUMBER
-        ,sql_errm    IN VARCHAR2
+    SELECT 
+         client.cl_name
+        ,pr_credit.num_dog
+        ,TO_CHAR(plan_oper.p_date,'DD.MM.YYYY') dt
+        ,TO_CHAR(plan_oper.p_summa,'9999990.99') summa
+        ,plan_oper.type_oper
+        FROM 
+        (
+                SELECT
+                    MAX(id)
+                    FROM c##course.pr_credit
+        ) pr_credit
+        
+        INNER JOIN c##course.client ON client.id = pr_credit.id_client
+        
+        INNER JOIN c##course.plan_oper ON plan_oper.collection_id = pr_credit.collect_plan
+        
+        ORDER BY plan_oper.p_date
     )
-IS
 
-    PRAGMA AUTONOMOUS_TRANSACTION; 
+UNION ALL
 
-BEGIN
-    INSERT INTO c##course.audit_table
+SELECT 
+     (SELECT cl_name FROM client WHERE client.id = pr_credit.id_client) 
+    ,pr_credit.num_dog
+    ,' '
+    ,TO_CHAR((SELECT SUM(p_summa) FROM plan_oper WHERE   plan_oper.collection_id = pr_credit.collect_plan AND plan_oper.type_oper = 'Погашение процентов'),'9999990,99')
+    ,'СУММА погашенных процентов'
+    FROM 
     (
-         sqlcode
-        ,sqlerrm
-    ) VALUES (
-         sql_code
-        ,sql_errm
-    );
+            SELECT
+                MAX(id)
+                FROM c##course.pr_credit
+    ) pr_credit
 
-    COMMIT;
+UNION ALL
 
-END;
+SELECT 
+     (SELECT cl_name FROM client WHERE client.id = pr_credit.id_client) 
+    ,pr_credit.num_dog
+    ,' '
+    ,TO_CHAR((SELECT SUM(p_summa) FROM plan_oper WHERE   plan_oper.collection_id = pr_credit.collect_plan AND plan_oper.type_oper = 'Погашение кредита'),'9999990,99')
+    ,'СУММА погашений кредита'
+    FROM 
+    (
+            SELECT
+                MAX(id)
+                FROM c##course.pr_credit
+    ) pr_credit
 
-/
-DROP TABLE c##course.audit_table;
+/*
+|
+| График платежей
+|
+*/
 
-CREATE TABLE c##course.audit_table 
-(
-      sqlcode       NUMBER 
-    , sqlerrm       VARCHAR2(200) 
-    , current_user  VARCHAR2(200)   DEFAULT USER 
-    , DT            TIMESTAMP       DEFAULT SYSDATE 
-)
+SELECT
+     p_date
+    ,SUM(p_summa) AS "ПЛЯТЕЖ"
+    ,LISTAGG(type_oper || ':' || TO_CHAR(p_summa,'999990.99'), '; ') WITHIN GROUP (ORDER BY type_oper) AS "РАСШИФРОВКА"
+    ,((
+        SELECT
+            SUM(p_summa)
+            FROM c##course.plan_oper issued
+            WHERE
+                issued.collection_id = po.collection_id
+                AND
+                issued.type_oper='Выдача кредита'
+    ) 
+    -
+    (
+        SELECT 
+            SUM(p_summa)
+            FROM c##course.plan_oper repayment
+            WHERE 
+                repayment.collection_id = po.collection_id
+                AND
+                repayment.type_oper = 'Погашение кредита'
+                AND
+                repayment.p_date <= po.p_date
+    )) AS "ОСТАТОК ЗАДОЛЖЕННОСТИ"
+
+    FROM c##course.plan_oper po
+
+    WHERE 
+        collection_id = (SELECT MAX(collect_plan) FROM pr_credit)
+        AND
+        type_oper IN  ('Погашение процентов','Погашение кредита')
+
+    GROUP BY
+         collection_id
+        ,p_date
+
+    
+
+
+    

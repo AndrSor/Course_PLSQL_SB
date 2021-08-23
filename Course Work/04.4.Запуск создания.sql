@@ -1,8 +1,7 @@
+CLEAR SCREEN;
 SET ECHO OFF;
 SET VERIFY OFF;
 SET SERVEROUTPUT ON;
-
-/
 
 DECLARE
     client_id NUMBER;
@@ -14,7 +13,7 @@ BEGIN
         id INTO client_id 
         FROM c##course.client
         WHERE cl_name LIKE '%Сороколат%';
-    
+        
     SELECT
           collect_plan
         , collect_fact
@@ -99,4 +98,22 @@ BEGIN
 
 END;
 
+
+SELECT
+         client.name AS client_name
+        ,pr_credit.num_dog AS num_dog
+        ,plan_oper.*
+        FROM c##course.plan_oper
+        INNER JOIN 
+        (
+                SELECT
+                    collect_plan
+                    FROM c##course.pr_credit
+                    WHERE ROWNUM = 1
+                    ORDER BY id DESC
+
+        ) pr_credit 
+        ON plan_oper.collection_id = pr_credit.collect_plan
+        INNER JOIN c##course.client 
+        ON pr_credit.id_client = client.id
 
