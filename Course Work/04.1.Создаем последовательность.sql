@@ -1,3 +1,5 @@
+DROP SEQUENCE c##course.seq;
+CLEAR SCREEN;
 
 CREATE OR REPLACE VIEW c##course.v_all_id
 AS

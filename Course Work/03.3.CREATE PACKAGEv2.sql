@@ -1,3 +1,6 @@
+CLEAR SCREEN;
+SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE PACKAGE c##course.pk_credit_report_v2 AS   
     TYPE report_row IS RECORD
     ( 
@@ -11,6 +14,7 @@ CREATE OR REPLACE PACKAGE c##course.pk_credit_report_v2 AS
     );
 
     TYPE table_report IS TABLE OF report_row;
+    
     result_table_report table_report;
     
     -- Вариант с конвеерной функцией
@@ -118,19 +122,17 @@ SET SERVEROUTPUT ON
 -- Тест
 
 -- использование в контексте SQL 
-ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
+
+ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета в формате ДД.ММ.ГГГГ:  ';
 EXECUTE c##course.pk_credit_report_v2.init (TO_DATE('&dt_report','DD.MM.YYYY'));
 SELECT * FROM TABLE(c##course.pk_credit_report_v2.fn_get_report);
 
 
 -- использование в контексте PL/SQL 
-CLEAR SCREEN;
-SET SERVEROUTPUT ON;
-ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
 
 BEGIN
 
-    c##course.pk_credit_report_v2.init (TO_DATE('&dt_report','DD.MM.YYYY'));
+    c##course.pk_credit_report_v2.init (TO_DATE('20.02.2021','DD.MM.YYYY'));
 
     FOR item IN (SELECT * FROM TABLE(c##course.pk_credit_report_v2.fn_get_report)) LOOP
     

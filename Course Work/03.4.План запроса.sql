@@ -1,7 +1,10 @@
---VARIABLE dt_report VARCHAR2(10);
-CLEAR SCREEN
 
-EXPLAIN PLAN FOR
+CLEAR SCREEN;
+
+ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета в формае ДД.ММ.ГГГГ:  ';
+
+--EXPLAIN PLAN FOR
+
 SELECT
               dog.num_dog
             , cli.cl_name
@@ -29,7 +32,7 @@ SELECT
             , SUM(CASE type_oper WHEN 'Погашение процентов' THEN f_summa ELSE 0 END) AS sum_pogasheno_percent
             FROM c##course.fact_oper
             WHERE
-                f_date <= TO_DATE(':dt_report','DD.MM.YYYY')
+                f_date <= TO_DATE('&dt_report','DD.MM.YYYY')
                 
             GROUP BY collection_id
     ) fact
@@ -48,10 +51,10 @@ SELECT
    ON (dog.collect_plan = plan.collection_id)
 
    WHERE
-        dog.date_begin <= TO_DATE(':dt_report','DD.MM.YYYY')
+        dog.date_begin <= TO_DATE('&dt_report','DD.MM.YYYY')
    ORDER BY
         dog.date_begin
 ;
 
-select * from table(DBMS_XPLAN.DISPLAY(format => 'ALL'));
+--SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(FORMAT => 'ALL'));
 

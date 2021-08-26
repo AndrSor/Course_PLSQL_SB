@@ -1,3 +1,5 @@
+CLEAR SCREEN;
+
 CREATE OR REPLACE PROCEDURE c##course.pr_import
 IS
 
@@ -142,6 +144,18 @@ END pr_import;
 /
 
 EXECUTE c##course.pr_import;
+
+
+-- Проверка
+
+SELECT
+      (SELECT COUNT(*) FROM c##course.client)       AS row_amount_in_client 
+    , (SELECT COUNT(*) FROM c##course.pr_credit)    AS row_amount_in_pr_cxredit
+    , (SELECT COUNT(*) FROM c##course.plan_oper)    AS row_amount_in_plan_oper   
+    , (SELECT COUNT(*) FROM c##course.fact_oper)    AS row_amount_in_fact_oper
+    , (SELECT COUNT(*) FROM c##course.audit_table)  AS row_amount_in_audit_table
+    FROM DUAL;
+
 
 
 --CONNECT SYSDBA

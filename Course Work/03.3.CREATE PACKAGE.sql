@@ -1,3 +1,7 @@
+
+SET SERVEROUTPUT ON;
+CLEAR SCREEN;
+
 CREATE OR REPLACE PACKAGE c##course.pk_credit_report AS   
     TYPE report_row IS RECORD
     ( 
@@ -159,17 +163,22 @@ SET SERVEROUTPUT ON
 
 /
 
--- Тест функции
 
-SET SERVEROUTPUt ON;
-CLEAR SCREEN;
-ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
+-------------------
+--
+-- Тест функции
+--
+-------------------
+
+--ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
 
 DECLARE
+
     report_out c##course.pk_credit_report.table_report := c##course.pk_credit_report.table_report();
+    
 BEGIN
 
-    report_out :=  c##course.pk_credit_report.fn_get_report (TO_DATE('&dt_report','DD.MM.YYYY'));
+    report_out :=  c##course.pk_credit_report.fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'));
 
 
         DBMS_OUTPUT.PUT_LINE(
@@ -200,8 +209,6 @@ BEGIN
 END;
 
 /
-
-
 
 ACCEPT dt_report DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
 EXECUTE c##course.pk_credit_report.pr_make_report (TO_DATE('&dt_report','DD.MM.YYYY'));

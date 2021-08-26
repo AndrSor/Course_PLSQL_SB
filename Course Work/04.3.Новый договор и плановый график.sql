@@ -206,9 +206,11 @@ SELECT
         ,plan_oper.type_oper
         FROM 
         (
-                SELECT
-                    MAX(id)
-                    FROM c##course.pr_credit
+            SELECT
+                *
+                FROM c##course.pr_credit
+                ORDER BY id DESC
+                FETCH FIRST 1 ROWS ONLY
         ) pr_credit
         
         INNER JOIN c##course.client ON client.id = pr_credit.id_client
@@ -229,8 +231,10 @@ SELECT
     FROM 
     (
             SELECT
-                MAX(id)
+                *
                 FROM c##course.pr_credit
+                ORDER BY id DESC
+                FETCH FIRST 1 ROWS ONLY
     ) pr_credit
 
 UNION ALL
@@ -244,9 +248,11 @@ SELECT
     FROM 
     (
             SELECT
-                MAX(id)
+                *
                 FROM c##course.pr_credit
-    ) pr_credit
+                ORDER BY id DESC
+                FETCH FIRST 1 ROWS ONLY
+    ) pr_credit;
 
 /*
 |
@@ -258,7 +264,7 @@ SELECT
      p_date
     ,SUM(p_summa) AS "ПЛЯТЕЖ"
     ,LISTAGG(type_oper || ':' || TO_CHAR(p_summa,'999990.99'), '; ') WITHIN GROUP (ORDER BY type_oper) AS "РАСШИФРОВКА"
-    ,((
+    ,TO_CHAR(ABS((
         SELECT
             SUM(p_summa)
             FROM c##course.plan_oper issued
@@ -278,7 +284,7 @@ SELECT
                 repayment.type_oper = 'Погашение кредита'
                 AND
                 repayment.p_date <= po.p_date
-    )) AS "ОСТАТОК ЗАДОЛЖЕННОСТИ"
+    )),'9999990.99') AS "ОСТАТОК ЗАДОЛЖЕННОСТИ"
 
     FROM c##course.plan_oper po
 
@@ -291,7 +297,3 @@ SELECT
          collection_id
         ,p_date
 
-    
-
-
-    

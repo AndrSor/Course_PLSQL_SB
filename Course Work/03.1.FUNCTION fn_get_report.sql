@@ -1,4 +1,4 @@
-﻿
+
 DROP TYPE c##course.table_report;
 /
 DROP TYPE c##course.report_row;
@@ -19,10 +19,19 @@ CREATE OR REPLACE TYPE c##course.report_row AS OBJECT
 CREATE OR REPLACE TYPE c##course.table_report AS TABLE OF c##course.report_row;
 /
 
+
+/*
+|
+| Функция возвращает NESTED TABLE с данным отчета
+|
+*/
+
 CREATE OR REPLACE FUNCTION c##course.fn_get_report (report_dt DATE)
     RETURN c##course.table_report PIPELINED
+    
     -- Атрибут pipelined означает, что функция является конвейерной, результат возвращается клиенту немедленно при вызове директивы pipe row, 
     -- поэтому оператор return необязателен.
+    
     AS
         result_table_report c##course.table_report;
 BEGIN
@@ -40,7 +49,9 @@ SELECT
             -- Сумма предстоящих процентов к погашению 
             , NVL(plan.sum_pogasheno_percent,0) - NVL(fact.sum_pogasheno_percent,0)
         )
+        
     BULK COLLECT INTO result_table_report
+    
     FROM
         c##course.pr_credit dog
 
@@ -95,16 +106,18 @@ SELECT
             , result_table_report(i).ostat_dolg
             , result_table_report(i).need_pogash_percent
         )); 
-    END LOOP;     
+    END LOOP; 
+    
     RETURN;
-
-
 
 END;
     
 /
+
 SET SERVEROUTPUT ON
+
 /
+
 BEGIN
     FOR i IN (
         SELECT * FROM c##course.fn_get_report (TO_DATE('10.10.2020','DD.MM.YYYY'))

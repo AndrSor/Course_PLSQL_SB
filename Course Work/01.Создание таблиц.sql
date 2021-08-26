@@ -1,12 +1,27 @@
-﻿------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
+
+CLEAR SCREEN;
+
+------ Удаление таблицы FACT_OPER
+
+DROP TABLE c##course.fact_oper;
+
+------ Удаление таблицы PLAN_OPER
+
+DROP TABLE c##course.plan_oper;
+
+------ Удаление таблицы PR_CREDIT
+
+DROP TABLE c##course.pr_credit;
 
 ------ Удаление таблицы CLIENTS
 
 DROP TABLE c##course.client;
 
+
+
+------
 ------ Создание таблицы клиенты (физ. лица)
+------
 
 CREATE TABLE c##course.client (
     id          NUMBER,
@@ -14,12 +29,12 @@ CREATE TABLE c##course.client (
     date_birth  DATE
 );
 
------- Создание индекса
+    ------ Создание индекса
 
 CREATE UNIQUE INDEX c##course.idx_client_id
     ON c##course.client (id);
 
------- Добавление первичного ключа
+    ------ Добавление первичного ключа
 
 ALTER TABLE c##course.client
     ADD
@@ -29,19 +44,9 @@ ALTER TABLE c##course.client
     );
 
 
-
-
-
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-
-
------- Удаление таблицы PR_CREDIT
-
-DROP TABLE c##course.pr_credit;
-
+------
 ------ Создание таблицы кредитные договоры
+------
 
 CREATE TABLE c##course.pr_credit (
       id              NUMBER
@@ -57,12 +62,12 @@ CREATE TABLE c##course.pr_credit (
     
 );
 
------- Создание индексов
+    ------ Создание индексов
 
 CREATE UNIQUE INDEX c##course.idx_pr_credit_id
     ON c##course.pr_credit (id);
 
------- Добавление первичного и внешних ключей
+    ------ Добавление первичного и внешних ключей
 
 ALTER TABLE c##course.pr_credit
     ADD
@@ -77,18 +82,9 @@ ALTER TABLE c##course.pr_credit
 
 
 
-
-
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-
-
------- Удаление таблицы FACT_OPER
-
-DROP TABLE c##course.fact_oper;
-
+------
 ------ Создание таблицы фактические операции
+------
 
 CREATE TABLE c##course.fact_oper (
     collection_id   NUMBER,
@@ -97,14 +93,14 @@ CREATE TABLE c##course.fact_oper (
     type_oper       VARCHAR2(50)
 );
 
------- Создание индекса
+    ------ Создание индекса
 
 CREATE INDEX c##course.idx_fact_oper_collection_id
     ON c##course.fact_oper (collection_id);
 CREATE INDEX c##course.idx_fact_oper_f_date
     ON c##course.fact_oper (f_date);
 
------- Добавление первичного ключа
+    ------ Добавление первичного ключа
 
 ALTER TABLE c##course.fact_oper
     ADD
@@ -116,18 +112,9 @@ ALTER TABLE c##course.fact_oper
     );
 
 
-
-
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-
-
------- Удаление таблицы PLAN_OPER
-
-DROP TABLE c##course.plan_oper;
-
+------
 ------ Создание таблицы плановые операции
+------
 
 CREATE TABLE c##course.plan_oper (
       collection_id   NUMBER
@@ -137,14 +124,14 @@ CREATE TABLE c##course.plan_oper (
    
 );
 
------- Создание индекса
+    ------ Создание индекса
 
 CREATE INDEX c##course.idx_plan_oper_collection_id
     ON c##course.plan_oper (collection_id);
 CREATE INDEX c##course.idx_plan_oper_p_date
     ON c##course.plan_oper (p_date);
 
------- Добавление внешнего ключа
+    ------ Добавление внешнего ключа
 
 
 ALTER TABLE c##course.plan_oper
@@ -163,9 +150,6 @@ ALTER TABLE c##course.plan_oper
 ------------------------------------------------------------------------
 
 
-
-
-
 -- Удаление таблицы AUDIT_TABLE
 
 DROP TABLE c##course.audit_table;
@@ -181,15 +165,30 @@ CREATE TABLE c##course.audit_table (
     , dt                  TIMESTAMP         DEFAULT SYSDATE
    
 );
-/
+
+
+-- Проверка
+
+SELECT
+      (SELECT COUNT(*) FROM c##course.client)       AS row_amount_in_client 
+    , (SELECT COUNT(*) FROM c##course.pr_credit)    AS row_amount_in_pr_cxredit
+    , (SELECT COUNT(*) FROM c##course.plan_oper)    AS row_amount_in_plan_oper   
+    , (SELECT COUNT(*) FROM c##course.fact_oper)    AS row_amount_in_fact_oper
+    , (SELECT COUNT(*) FROM c##course.audit_table)  AS row_amount_in_audit_table
+    FROM DUAL;
+
+
+
+
+
 
 -- Удаление таблицы отчетов
 
-DROP TABLE c##course.reports;
-/
+--DROP TABLE c##course.reports;
+
 
 -- Создание таблицы отчетов
-
+/*
 CREATE TABLE c##course.reports
 ( 
           num_dog             varchar2(10)
@@ -201,3 +200,4 @@ CREATE TABLE c##course.reports
         , need_pogash_percent number
         , report_dt           date
  );
+ */

@@ -98,7 +98,7 @@ BEGIN
 
 END;
 
-
+/*
 SELECT
          client.name AS client_name
         ,pr_credit.num_dog AS num_dog
@@ -116,4 +116,4 @@ SELECT
         ON plan_oper.collection_id = pr_credit.collect_plan
         INNER JOIN c##course.client 
         ON pr_credit.id_client = client.id
-
+*/

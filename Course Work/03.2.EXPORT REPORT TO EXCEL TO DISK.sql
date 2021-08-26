@@ -1,4 +1,6 @@
-﻿CREATE OR REPLACE PROCEDURE c##course.pr_make_report (report_dt IN DATE)
+CLEAR SCREEN;
+
+CREATE OR REPLACE PROCEDURE c##course.pr_make_report (report_dt IN DATE)
 
 AS
     t NUMBER := 0;
@@ -66,7 +68,7 @@ SET SERVEROUTPUT ON
 
 ACCEPT dt DATE FORMAT 'dd.mm.yyyy' PROMPT 'Введите дату отчета:  ';
 
-DEFINE spool_file = 'c:\Temp\&dt..xls';
+DEFINE spool_file = 'c:\Report\&dt..xls';
 SPOOL &spool_file
 
 EXECUTE c##course.pr_make_report (TO_DATE('&dt','DD.MM.YYYY'));

@@ -1,4 +1,5 @@
-SET SERVEROUT ON
+CLEAR SCREEN;
+SET SERVEROUT ON;
 /
 
 CREATE OR REPLACE PROCEDURE c##course.pr_create_client (
@@ -56,12 +57,13 @@ END pr_create_client;
 /
 
 
-/*
+-- Тест
+
 DECLARE
     client_id number;
 BEGIN
     c##course.pr_create_client('Сороколат Андрей Евгеньевич',TO_DATE('30.12.1977','DD.MM.YYYY'),client_id);
     DBMS_OUTPUT.PUT_LINE('client_id = ' || client_id);
 END;
-*/
+
 /
