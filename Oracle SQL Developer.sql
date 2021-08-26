@@ -1,0 +1,39 @@
+CLEAR SCREEN;
+
+TRUNCATE TABLE t1;
+DROP TABLE t1;
+CREATE GLOBAL TEMPORARY TABLE t1 (
+    id NUMBER,
+    name VARCHAR2(100)
+) ON COMMIT PRESERVE ROWS;
+
+INSERT INTO t1 VALUES (1, 'A');
+INSERT INTO t1 VALUES (2, 'B');
+SELECT * FROM t1;
+--COMMIT;
+
+TRUNCATE TABLE t2;
+DROP TABLE t2;
+CREATE GLOBAL TEMPORARY TABLE t2 (
+    id NUMBER,
+    name VARCHAR2(100),
+    t1_id NUMBER
+) ON COMMIT PRESERVE ROWS;
+
+INSERT INTO t2 VALUES (1,'CC',1);
+INSERT INTO t2 VALUES (2,'VV',3);
+INSERT INTO t2 VALUES (3,'MMNNN',2);
+INSERT INTO t2 VALUES (4,'MMNNN3',2);
+--COMMIT;
+
+SELECT * FROM t2;
+
+SELECT /*json-formatted*/
+    t2.id as t2_id,
+    t2.name as t2_name,
+    t1.id as t1_id,
+    t1.name as t1_name
+    FROM t2
+    RIGHT JOIN t1
+    ON t2.t1_id = t1.id;
+    

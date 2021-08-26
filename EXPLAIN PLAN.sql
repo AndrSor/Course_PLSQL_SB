@@ -23,5 +23,14 @@ SELECT
 --SELECT * FROM plan_table where ;
 
 SELECT * FROM table (DBMS_XPLAN.DISPLAY);
+/*
+SELECT
+     sql_id
+    ,child_number
+    ,plan_hash_value
+    FROM gv$sql
+    ;
+*/
+    
 
 
